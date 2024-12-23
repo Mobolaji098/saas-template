@@ -1,15 +1,27 @@
 import clsx from "clsx";
-import { useState } from "react";
-import { SlideDown } from "react-slidedown";
-import "react-slidedown/lib/slidedown.css";
+import { useEffect, useRef, useState } from "react";
 
 const FaqItem = ({ item, index }) => {
+  const contentRef = useRef(null);
+  const [height, setHeight] = useState("0px");
   const [activeId, setActiveId] = useState(null);
-
   const active = activeId === item.id;
+  useEffect(() => {
+    if (active) {
+      setHeight(`${contentRef.current.scrollHeight}px`);
+    } else {
+      setHeight(`${contentRef.current.scrollHeight}px`);
+    }
+  }, [active]);
 
   return (
-    <div className="relative z-2 mb-16">
+    <div
+      className={clsx(
+        "relative z-2 mb-16 transition-all duration-500 ease-linear",
+      )}
+      style={{ maxHeight: height }}
+      ref={contentRef}
+    >
       <div
         className="group relative flex cursor-pointer items-center justify-between gap-10 px-7"
         onClick={() => {
@@ -41,15 +53,13 @@ const FaqItem = ({ item, index }) => {
         </div>
       </div>
 
-      <SlideDown>
-        {activeId === item.id && (
-          <div className="body-3 px-7 py-3.5">{item.answer}</div>
-        )}
-      </SlideDown>
+      {activeId === item.id && (
+        <div className="body-3 px-7 py-3.5">{item.answer}</div>
+      )}
 
       <div
         className={clsx(
-          "g5 -bottom-7 -top-7 left-0 right-0 -z-1 rounded-3xl opacity-0 transition-opacity duration-500 absolute",
+          "g5 -bottom-7 -top-7 left-0 right-0 -z-1 rounded-3xl opacity-0 transition-all duration-500 absolute",
           active && "opacity-100",
         )}
       >
